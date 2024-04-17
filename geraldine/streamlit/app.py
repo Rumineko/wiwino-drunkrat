@@ -40,9 +40,9 @@ def display_top_vintages(db_file):
         # Plotting bar chart
         fig = go.Figure()
         fig.add_trace(go.Bar(y=vintages, x=total_appearances, name='Total Awards', marker_color='blue', orientation='h'))
-        fig.add_trace(go.Bar(y=vintages, x=appearances_rank_1, name='Rank 1', marker_color='green', orientation='h'))
-        fig.add_trace(go.Bar(y=vintages, x=appearances_rank_2, name='Rank 2', marker_color='orange', orientation='h'))
-        fig.add_trace(go.Bar(y=vintages, x=appearances_rank_3, name='Rank 3', marker_color='red', orientation='h'))
+        fig.add_trace(go.Bar(y=vintages, x=appearances_rank_1, name='1st place', marker_color='green', orientation='h'))
+        fig.add_trace(go.Bar(y=vintages, x=appearances_rank_2, name='2nd place', marker_color='orange', orientation='h'))
+        fig.add_trace(go.Bar(y=vintages, x=appearances_rank_3, name='3rd place', marker_color='red', orientation='h'))
 
         fig.update_layout(barmode='group', 
                           title='Top Vintages Based on Toplists Rankings', 
@@ -116,9 +116,9 @@ def display_top_wineries(db_file):
         # Plotting bar chart
         fig = go.Figure()
         fig.add_trace(go.Bar(y=wineries, x=total_appearances, name='Total Awards', marker_color='blue', orientation='h'))
-        fig.add_trace(go.Bar(y=wineries, x=appearances_rank_1, name='Rank 1', marker_color='green', orientation='h'))
-        fig.add_trace(go.Bar(y=wineries, x=appearances_rank_2, name='Rank 2', marker_color='orange', orientation='h'))
-        fig.add_trace(go.Bar(y=wineries, x=appearances_rank_3, name='Rank 3', marker_color='red', orientation='h'))
+        fig.add_trace(go.Bar(y=wineries, x=appearances_rank_1, name='1st place', marker_color='green', orientation='h'))
+        fig.add_trace(go.Bar(y=wineries, x=appearances_rank_2, name='2nd place', marker_color='orange', orientation='h'))
+        fig.add_trace(go.Bar(y=wineries, x=appearances_rank_3, name='3rd place', marker_color='red', orientation='h'))
 
         fig.update_layout(barmode='group', 
                           title='Top Wineries Based on Toplists Rankings', 
@@ -354,6 +354,11 @@ db_file_path = "../../db/vivino.db"
 # Create buttons in the sidebar
 st.sidebar.write('# Wiwimo Drunkat')
 
+st.sidebar.write('### Top Wines')
+button6 = st.sidebar.button('Per Grape Type')
+button7 = st.sidebar.button('Per Customer Rating')
+button8 = st.sidebar.button('Per Taste')
+
 st.sidebar.write('### Top Awards')
 button3 = st.sidebar.button('Vintages')
 button4 = st.sidebar.button('Wineries')
@@ -361,6 +366,9 @@ button4 = st.sidebar.button('Wineries')
 st.sidebar.write("### Country Leaderboard")
 button2 = st.sidebar.button("Vintage Reviews")
 button1 = st.sidebar.button("Wine Reviews")
+
+st.sidebar.write('### Population Analysis')
+button5 = st.sidebar.button('User Count Per Country')
 
 # Display different content based on which button is clicked
 if button1:
@@ -371,5 +379,13 @@ elif button3:
     display_top_vintages(db_file_path)
 elif button4:    
     display_top_wineries(db_file_path)
+elif button5:
+    st.write('Alice')
+elif button6:
+    st.write('Alice')
+elif button7:
+    st.write('Sem')
+elif button8:
+    st.write('Sem')
 else:
     st.write('Welcome')
