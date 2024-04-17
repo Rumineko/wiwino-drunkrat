@@ -2,6 +2,7 @@ import sqlite3
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+import plotly.graph_objects as go
 import os
 
 current_dir = os.path.dirname(__file__)
@@ -44,9 +45,18 @@ name_mapping = {
 # Replace the names
 cntr["name"] = cntr["name"].replace(name_mapping)
 
-fig = px.bar(cntr, x="name", y="users_count", color="name", height=500, width=700)
+# Get the index of 'South Africa'
+index_sa = cntr[cntr["name"] == "South Africa"].index[0]
+
+# Filter the DataFrame to include only countries up until 'South Africa'
+cntr_filtered = cntr.loc[:index_sa]
+
+# Create the bar chart with the filtered DataFrame
+fig = px.bar(
+    cntr_filtered, x="name", y="users_count", color="name", height=500, width=700
+)
 fig.update_layout(
-    title="User count per country",
+    title="User Count per Country",
     xaxis_title="Country",
     yaxis_title="User count",
     showlegend=False,
@@ -90,5 +100,46 @@ selected_grape = st.selectbox("Select a grape type:", grape_types)
 # Display the top wines for the selected grape type
 group = grouped.get_group(selected_grape)
 group = group.reset_index(drop=True)
-group.index += 1
-st.write(group)
+
+base_url = "https://www.vivino.com/search/wines?q="
+# Create a new column 'search_link' that contains the search URL for each wine
+group["search_link"] = (
+    base_url
+    + group["winery"].str.replace(" ", "+")
+    + "+"
+    + group["wine"].str.replace(" ", "+")
+)
+
+# Create a Plotly table without the 'search_link' column
+fig = go.Figure(
+    data=[
+        go.Table(
+            header=dict(
+                values=[
+                    col.capitalize()
+                    for col in group.drop(columns="search_link").columns
+                ],
+                fill_color="#49243E",
+                font=dict(size=20),
+            ),
+            cells=dict(
+                values=[
+                    group[col] for col in group.drop(columns="search_link").columns
+                ],
+                fill_color="#704264",
+                font=dict(size=14),
+            ),
+        )
+    ]
+)
+
+fig.update_layout(
+    title=f"Top Five Wines for {selected_grape} Grape Type", height=350, width=700
+)
+
+st.plotly_chart(fig)
+
+# Display the search links as a separate list
+st.header("Search Links for the Top Five Wines")
+for i, row in group.iterrows():
+    st.markdown(f"[{row['winery']} {row['wine']}]({row['search_link']})")
