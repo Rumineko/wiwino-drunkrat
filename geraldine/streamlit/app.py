@@ -295,6 +295,8 @@ def display_wine_country_map(db_file):
                             hover_data={'avg_rating': ':.2f'},
                             projection="natural earth",
                             labels={'avg_rating': 'Avg Rating'})
+        
+        fig.update_traces(hovertemplate='<b>%{hovertext}</b><br><br>Avg Rating: %{customdata[0]:.2f}')
 
         # Update layout settings
         fig.update_layout(
@@ -329,6 +331,8 @@ def display_vintage_country_map (db_file):
                             hover_data={'avg_rating': ':.2f'},
                             projection="natural earth",
                             labels={'avg_rating': 'Avg Rating'})
+        
+        fig.update_traces(hovertemplate='<b>%{hovertext}</b><br><br>Avg Rating: %{customdata[0]:.2f}')
 
         # Update layout settings
         fig.update_layout(
