@@ -352,7 +352,7 @@ def display_vintage_country_map (db_file):
 db_file_path = "../../db/vivino.db"
 
 # Create buttons in the sidebar
-st.sidebar.write('# Wiwimo Drunkat')
+st.sidebar.write('# Wiwimo Drunkrat')
 
 st.sidebar.write('### Top Wines')
 button6 = st.sidebar.button('Per Grape Type')
