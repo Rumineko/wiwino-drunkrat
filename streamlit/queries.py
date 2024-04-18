@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objs as go
+import os
 
 def display_top_vintages(db_file):
     # Connect to the database
@@ -348,8 +349,240 @@ def display_vintage_country_map (db_file):
         # Display the choropleth map in Streamlit
         st.plotly_chart(fig)
 
+def country_pop_count():
+    st.header("Vivino User Count Population Analysis")
+    st.write("This analysis is based on the Vivino user count per country.")
+
+    countries = """
+        SELECT * FROM country_priority
+        """
+
+    cntr = pd.read_sql_query(countries, con)
+
+    name_mapping = {
+        "États-Unis": "United States",
+        "France": "France",
+        "Italie": "Italy",
+        "Allemagne": "Germany",
+        "Espagne": "Spain",
+        "Argentine": "Argentina",
+        "Suisse": "Switzerland",
+        "Portugal": "Portugal",
+        "Australie": "Australia",
+        "Chili": "Chile",
+        "Afrique du Sud": "South Africa",
+        "Roumanie": "Romania",
+        "Israël": "Israel",
+        "Grèce": "Greece",
+        "Hongrie": "Hungary",
+        "Croatie": "Croatia",
+        "Moldavie": "Moldova",
+    }
+
+    # Replace the names
+    cntr["name"] = cntr["name"].replace(name_mapping)
+
+    # Get the index of 'South Africa'
+    index_sa = cntr[cntr["name"] == "South Africa"].index[0]
+
+    # Filter the DataFrame to include only countries up until 'South Africa'
+    cntr_filtered = cntr.loc[:index_sa]
+
+    # Create the bar chart with the filtered DataFrame
+    fig = px.bar(
+        cntr_filtered, x="name", y="users_count", color="name", height=500, width=700
+    )
+    fig.update_layout(
+        title="User Count per Country",
+        xaxis_title="Country",
+        yaxis_title="User count",
+        showlegend=False,
+    )
+    st.plotly_chart(fig)
+
+    # Calculate the total user count for all countries
+    total_user_count = cntr["users_count"].sum()
+
+    # Calculate the user count for 'États-Unis'
+    us_user_count = cntr[cntr["name"] == "United States"]["users_count"].sum()
+
+    # Calculate the percentage of user count for 'États-Unis' compared to total user count
+    us_percentage = (us_user_count / total_user_count) * 100
+
+    st.write(
+        f"The percentage of user count for the 'United States' compared to total user count for all countries is {round(us_percentage, 2)}%"
+    )
+
+
+def top_wines_grapes():
+    grapes = """
+        SELECT *
+        from top_five_wines_per_grape        
+    """
+
+    grps = pd.read_sql_query(grapes, con)
+    grps.set_index("grape", inplace=True)
+    grouped = grps.groupby("grape", sort=False)
+
+    # Get the unique grape types
+    grape_types = grps.index.unique()
+
+    st.header("Top Five Wines Per Grape Type")
+    st.write(
+        "These are the top five wines for each grape type. They are sorted by how popular each grape type is, from most to least popular:"
+    )
+
+    # Create a select box for the grape types
+    selected_grape = st.selectbox("Select a grape type:", grape_types)
+
+    # Display the top wines for the selected grape type
+    group = grouped.get_group(selected_grape)
+    group = group.reset_index(drop=True)
+
+    base_url = "https://www.vivino.com/search/wines?q="
+    # Create a new column 'search_link' that contains the search URL for each wine
+    group["search_link"] = (
+        base_url
+        + group["winery"].str.replace(" ", "+")
+        + "+"
+        + group["wine"].str.replace(" ", "+")
+    )
+
+    # Create a Plotly table without the 'search_link' column
+    fig = go.Figure(
+        data=[
+            go.Table(
+                header=dict(
+                    values=[
+                        col.capitalize()
+                        for col in group.drop(columns="search_link").columns
+                    ],
+                    fill_color="#49243E",
+                    font=dict(size=20),
+                ),
+                cells=dict(
+                    values=[
+                        group[col] for col in group.drop(columns="search_link").columns
+                    ],
+                    fill_color="#704264",
+                    font=dict(size=14),
+                ),
+            )
+        ]
+    )
+
+    fig.update_layout(
+        title=f"Top Five Wines for {selected_grape} Grape Type", height=350, width=700
+    )
+
+    st.plotly_chart(fig)
+
+    # Display the search links as a separate list
+    st.header("Search Links for the Top Five Wines")
+    for i, row in group.iterrows():
+        st.markdown(f"[{row['winery']} {row['wine']}]({row['search_link']})")
+
+def top_wines(score: float):
+    connexion = sqlite3.connect("../db/vivino.db")
+    cursor = connexion.cursor()
+    cursor.execute("""
+        SELECT w.name, ROUND((w.ratings_average + v.ratings_average), 3) AS total_score
+        FROM wines AS w
+        JOIN vintages AS v ON w.id = v.wine_id
+        JOIN wineries AS wi ON w.winery_id = wi.id
+        WHERE ROUND((w.ratings_average + v.ratings_average), 3) >= ?
+        ORDER BY ROUND((w.ratings_average + v.ratings_average), 3) ASC
+    """, (score,))
+    result = cursor.fetchall()
+    return result
+
+def wines_keynotes(k1, **kwargs):
+    connexion = sqlite3.connect("../db/vivino.db")
+    cursor = connexion.cursor()
+    # Combine k1 and additional keyword arguments
+    keywords = [k1, *kwargs.values()]
+
+    # Filter out None values and convert to strings
+    keywords = [str(k) for k in keywords if k is not None]
+
+    # Create the SQL IN clause string with the keywords
+    in_clause = ",".join(f"'{k}'" for k in keywords)
+
+    # Construct the SQL query dynamically
+    query = f"""
+    SELECT w.name AS wine_name,
+        GROUP_CONCAT(DISTINCT k.name) AS keywords
+    FROM wines AS w
+    JOIN keywords_wine AS kw ON w.id = kw.wine_id
+    JOIN keywords AS k ON kw.keyword_id = k.id
+    WHERE k.name IN ({in_clause})
+    GROUP BY w.name
+    HAVING MIN(kw.count) >= 10;
+    """
+
+    # Execute the query
+    cursor.execute(query)
+    result = cursor.fetchall()
+
+    # Return the result
+    return result
+
+def keywords():
+    connexion = sqlite3.connect("../db/vivino.db")
+    cursor = connexion.cursor()
+     
+    kl =[]
+    query = f"""
+        select name
+        from keywords
+
+        """
+
+    # Execute the query
+    cursor.execute(query)
+    result = cursor.fetchall()
+    for row in result:
+        for r in row:
+            kl.append(r)
+
+    return kl
+
+def semstreamlit():
+    st.title("Top wines")
+
+    keywords_list = keywords()  # Your list of keywords
+
+    # Selectbox for choosing keywords
+    k1 = st.selectbox("Select a keyword for k1", keywords_list, key="k1")
+    k2 = st.selectbox("Select a keyword for k2", [None] + keywords_list, key="k2")
+    k3 = st.selectbox("Select a keyword for k3", [None] + keywords_list, key="k3")
+    k4 = st.selectbox("Select a keyword for k4", [None] + keywords_list, key="k4")
+    k5 = st.selectbox("Select a keyword for k5", [None] + keywords_list, key="k5")
+
+
+    if st.button("Wines with the chosen keywords"):
+        wines = wines_keynotes(k1=k1, k2=k2, k3=k3, k4=k4, k5=k5)
+
+        st.table(wines)
+
+def topwines():
+    st.title("Top wines")
+
+    score = st.slider("Select a score", min_value=0, max_value=10)
+
+    if st.button("Wines with the chosen score"):
+        wines = top_wines(score) 
+
+        st.table(wines)
+
+current_dir = os.path.dirname(__file__)
+previous_dir = os.path.dirname(current_dir)
+db_path = os.path.join(previous_dir, "db/vivino.db")
+con = sqlite3.connect(db_path)
+cursor = con.cursor()
+
 # Provide the path to your SQLite database file
-db_file_path = "../../db/vivino.db"
+db_file_path = "../db/vivino.db"
 
 # Create buttons in the sidebar
 st.sidebar.write('# Wiwimo Drunkrat')
@@ -368,7 +601,7 @@ button2 = st.sidebar.button("Vintage Reviews")
 button1 = st.sidebar.button("Wine Reviews")
 
 st.sidebar.write('### Population Analysis')
-button5 = st.sidebar.button('User Count Per Country')
+button5 = st.sidebar.button('User Population by Country')
 
 # Display different content based on which button is clicked
 if button1:
@@ -380,12 +613,12 @@ elif button3:
 elif button4:    
     display_top_wineries(db_file_path)
 elif button5:
-    st.write('Alice')
+    country_pop_count()
 elif button6:
-    st.write('Alice')
+    top_wines_grapes()
 elif button7:
-    st.write('Sem')
+    semstreamlit()
 elif button8:
-    st.write('Sem')
+    topwines()
 else:
     st.write('Welcome')
