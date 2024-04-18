@@ -14,7 +14,7 @@
 The company. _Wiwino_, is proudly active in the wine industry. They have been gathering data about wines from their users for years. They want to have a better understanding of the wine market by analyzing this data.
 
 This project aims to provide a tool for deriving useful insights from the gathered data.
-To view the finished project go to our website with this link [VivioApp](https://drunken-rat.onrender.com/)
+To view the finished project go to our website with this link [VivinoApp](https://drunken-rat.onrender.com/)
 
 ## 📋 Data
 
