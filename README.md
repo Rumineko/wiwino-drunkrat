@@ -1,6 +1,10 @@
 # Wiwino Market analysis
 
 [![forthebadge made-with-python](https://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
+[![forthebadge made-with-sqlite](https://ForTheBadge.com/images/badges/made-with-sqlite.svg)](https://www.sqlite.org/)
+[![forthebadge made-with-pandas](https://ForTheBadge.com/images/badges/made-with-pandas.svg)](https://pandas.pydata.org/)
+
+
 
 ## 📒 Description
 
