@@ -5,6 +5,7 @@ import plotly.express as px
 import plotly.graph_objs as go
 import os
 
+
 def display_top_vintages(db_file):
     # Connect to the database
     conn = sqlite3.connect(db_file)
@@ -12,7 +13,8 @@ def display_top_vintages(db_file):
 
     try:
         # Execute SQL query to select the top 10 vintages based on appearances in top lists
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT vintages.name, 
             COUNT(*) AS total_appearances, 
             SUM(CASE WHEN vintage_toplists_rankings.rank = 1 THEN 1 ELSE 0 END) AS appearances_rank_1,
@@ -23,7 +25,8 @@ def display_top_vintages(db_file):
             GROUP BY vintages.name
             ORDER BY total_appearances DESC, appearances_rank_1 DESC, appearances_rank_2 DESC, appearances_rank_3 DESC
             LIMIT 10;             
-        """)
+        """
+        )
 
         # Fetch the results
         results = cursor.fetchall()
@@ -40,22 +43,55 @@ def display_top_vintages(db_file):
 
         # Plotting bar chart
         fig = go.Figure()
-        fig.add_trace(go.Bar(y=vintages, x=total_appearances, name='Total Awards', marker_color='blue', orientation='h'))
-        fig.add_trace(go.Bar(y=vintages, x=appearances_rank_1, name='1st place', marker_color='green', orientation='h'))
-        fig.add_trace(go.Bar(y=vintages, x=appearances_rank_2, name='2nd place', marker_color='orange', orientation='h'))
-        fig.add_trace(go.Bar(y=vintages, x=appearances_rank_3, name='3rd place', marker_color='red', orientation='h'))
+        fig.add_trace(
+            go.Bar(
+                y=vintages,
+                x=total_appearances,
+                name="Total Awards",
+                marker_color="blue",
+                orientation="h",
+            )
+        )
+        fig.add_trace(
+            go.Bar(
+                y=vintages,
+                x=appearances_rank_1,
+                name="1st place",
+                marker_color="green",
+                orientation="h",
+            )
+        )
+        fig.add_trace(
+            go.Bar(
+                y=vintages,
+                x=appearances_rank_2,
+                name="2nd place",
+                marker_color="orange",
+                orientation="h",
+            )
+        )
+        fig.add_trace(
+            go.Bar(
+                y=vintages,
+                x=appearances_rank_3,
+                name="3rd place",
+                marker_color="red",
+                orientation="h",
+            )
+        )
 
-        fig.update_layout(barmode='group', 
-                          title='Top Vintages Based on Toplists Rankings', 
-                          yaxis_title='Vintages', 
-                          xaxis_title='Number of Awards')
-        
+        fig.update_layout(
+            barmode="group",
+            title="Top Vintages Based on Toplists Rankings",
+            yaxis_title="Vintages",
+            xaxis_title="Number of Awards",
+        )
+
         # Reorder the traces to match the order of the legend
         fig.data = fig.data[::-1]
 
         # Manually specify the order of legend items
-        fig.update_layout(legend=dict(traceorder='reversed'))
-
+        fig.update_layout(legend=dict(traceorder="reversed"))
 
         # Show the chart
         st.plotly_chart(fig)
@@ -66,6 +102,7 @@ def display_top_vintages(db_file):
         # Close the connection
         conn.close()
 
+
 def display_top_wineries(db_file):
     # Connect to the database
     conn = sqlite3.connect(db_file)
@@ -73,7 +110,8 @@ def display_top_wineries(db_file):
 
     try:
         # Execute SQL query to select the top 10 wineries with the most appearances in top lists
-        cursor.execute("""
+        cursor.execute(
+            """
            SELECT 
                 wineries.name,
                 COUNT(*) AS total_appearances,
@@ -99,7 +137,8 @@ def display_top_wineries(db_file):
                 appearances_rank_3 DESC
             LIMIT 
                 10;        
-        """)
+        """
+        )
 
         # Fetch the results
         results = cursor.fetchall()
@@ -116,21 +155,55 @@ def display_top_wineries(db_file):
 
         # Plotting bar chart
         fig = go.Figure()
-        fig.add_trace(go.Bar(y=wineries, x=total_appearances, name='Total Awards', marker_color='blue', orientation='h'))
-        fig.add_trace(go.Bar(y=wineries, x=appearances_rank_1, name='1st place', marker_color='green', orientation='h'))
-        fig.add_trace(go.Bar(y=wineries, x=appearances_rank_2, name='2nd place', marker_color='orange', orientation='h'))
-        fig.add_trace(go.Bar(y=wineries, x=appearances_rank_3, name='3rd place', marker_color='red', orientation='h'))
+        fig.add_trace(
+            go.Bar(
+                y=wineries,
+                x=total_appearances,
+                name="Total Awards",
+                marker_color="blue",
+                orientation="h",
+            )
+        )
+        fig.add_trace(
+            go.Bar(
+                y=wineries,
+                x=appearances_rank_1,
+                name="1st place",
+                marker_color="green",
+                orientation="h",
+            )
+        )
+        fig.add_trace(
+            go.Bar(
+                y=wineries,
+                x=appearances_rank_2,
+                name="2nd place",
+                marker_color="orange",
+                orientation="h",
+            )
+        )
+        fig.add_trace(
+            go.Bar(
+                y=wineries,
+                x=appearances_rank_3,
+                name="3rd place",
+                marker_color="red",
+                orientation="h",
+            )
+        )
 
-        fig.update_layout(barmode='group', 
-                          title='Top Wineries Based on Toplists Rankings', 
-                          yaxis_title='Wineries', 
-                          xaxis_title='Number of Awards')
-        
+        fig.update_layout(
+            barmode="group",
+            title="Top Wineries Based on Toplists Rankings",
+            yaxis_title="Wineries",
+            xaxis_title="Number of Awards",
+        )
+
         # Reorder the traces to match the order of the legend
         fig.data = fig.data[::-1]
 
         # Manually specify the order of legend items
-        fig.update_layout(legend=dict(traceorder='reversed'))
+        fig.update_layout(legend=dict(traceorder="reversed"))
 
         # Show the chart
         st.plotly_chart(fig)
@@ -141,6 +214,7 @@ def display_top_wineries(db_file):
         # Close the connection
         conn.close()
 
+
 def get_top_wineries(db_file):
     # Connect to the database
     conn = sqlite3.connect(db_file)
@@ -148,7 +222,8 @@ def get_top_wineries(db_file):
 
     try:
         # Execute SQL query to select the top 3 wineries with the most rank 1 awards
-        cursor.execute("""
+        cursor.execute(
+            """
            SELECT 
                 wineries.name,
                 COUNT(*) AS total_appearances,
@@ -174,13 +249,14 @@ def get_top_wineries(db_file):
                 appearances_rank_3 DESC
             LIMIT 
                 10;        
-        """)
+        """
+        )
 
         # Fetch the results
         results = cursor.fetchall()
 
         # Print the results
-        st.write('#### Wineries Based on Toplists Rankings')
+        st.write("#### Wineries Based on Toplists Rankings")
         for idx, row in enumerate(results, start=1):
             st.write(f"{idx}. {row[0]}")
 
@@ -189,6 +265,7 @@ def get_top_wineries(db_file):
     finally:
         # Close the connection
         conn.close()
+
 
 def get_avg_wine_rating_per_country(db_file):
     # Connect to the SQLite database
@@ -218,15 +295,23 @@ def get_avg_wine_rating_per_country(db_file):
         rows = cursor.fetchall()
 
         # Convert rows to a list of dictionaries
-        data = [{'code': convert_to_alpha3(row[0]), 'country_name': row[1], 'avg_rating': row[2]} for row in rows]
+        data = [
+            {
+                "code": convert_to_alpha3(row[0]),
+                "country_name": row[1],
+                "avg_rating": row[2],
+            }
+            for row in rows
+        ]
 
         return data
-    
+
     except sqlite3.Error as e:
         print("SQLite error:", e)
     finally:
         # Close the connection
         conn.close()
+
 
 def get_avg_vintage_rating_per_country(db_file):
     # Connect to the SQLite database
@@ -259,7 +344,14 @@ def get_avg_vintage_rating_per_country(db_file):
         rows = cursor.fetchall()
 
         # Convert rows to a list of dictionaries
-        data = [{'code': convert_to_alpha3(row[0]), 'country_name': row[1], 'avg_rating': row[2]} for row in rows]
+        data = [
+            {
+                "code": convert_to_alpha3(row[0]),
+                "country_name": row[1],
+                "avg_rating": row[2],
+            }
+            for row in rows
+        ]
 
         return data
 
@@ -269,18 +361,36 @@ def get_avg_vintage_rating_per_country(db_file):
         # Close the connection
         conn.close()
 
+
 # Function to convert two-letter country code to ISO 3166-1 alpha-3 format
 def convert_to_alpha3(code):
     country_codes = {
-        'ar': 'ARG', 'au': 'AUS', 'ch': 'CHE', 'cl': 'CHL', 'de': 'DEU', 'es': 'ESP', 'fr': 'FRA', 'gr': 'GRC',
-        'hr': 'HRV', 'hu': 'HUN', 'il': 'ISR', 'it': 'ITA', 'md': 'MDA', 'pt': 'PRT', 'ro': 'ROU', 'us': 'USA',
-        'za': 'ZAF'
+        "ar": "ARG",
+        "au": "AUS",
+        "ch": "CHE",
+        "cl": "CHL",
+        "de": "DEU",
+        "es": "ESP",
+        "fr": "FRA",
+        "gr": "GRC",
+        "hr": "HRV",
+        "hu": "HUN",
+        "il": "ISR",
+        "it": "ITA",
+        "md": "MDA",
+        "pt": "PRT",
+        "ro": "ROU",
+        "us": "USA",
+        "za": "ZAF",
     }
-    return country_codes.get(code, code)  # Return the alpha-3 code if available, otherwise return the original code
+    return country_codes.get(
+        code, code
+    )  # Return the alpha-3 code if available, otherwise return the original code
+
 
 def display_wine_country_map(db_file):
-   # Call the function to retrieve the data
-    data = get_avg_wine_rating_per_country(db_file_path)
+    # Call the function to retrieve the data
+    data = get_avg_wine_rating_per_country(db_path)
 
     # If data is not None, create a choropleth map using Plotly Express
     if data:
@@ -288,32 +398,37 @@ def display_wine_country_map(db_file):
         df = pd.DataFrame(data)
 
         # Create a choropleth map using Plotly Express
-        fig = px.choropleth(df, 
-                            locations='code', 
-                            color='avg_rating',
-                            color_continuous_scale="RdYlGn",
-                            hover_name="country_name",
-                            hover_data={'avg_rating': ':.2f'},
-                            projection="natural earth",
-                            labels={'avg_rating': 'Avg Rating'})
-        
-        fig.update_traces(hovertemplate='<b>%{hovertext}</b><br><br>Avg Rating: %{customdata[0]:.2f}')
+        fig = px.choropleth(
+            df,
+            locations="code",
+            color="avg_rating",
+            color_continuous_scale="RdYlGn",
+            hover_name="country_name",
+            hover_data={"avg_rating": ":.2f"},
+            projection="natural earth",
+            labels={"avg_rating": "Avg Rating"},
+        )
+
+        fig.update_traces(
+            hovertemplate="<b>%{hovertext}</b><br><br>Avg Rating: %{customdata[0]:.2f}"
+        )
 
         # Update layout settings
         fig.update_layout(
-            title_text='Country Leaderboard: Wine Reviews',
+            title_text="Country Leaderboard: Wine Reviews",
             geo=dict(
                 showland=True,
                 showcountries=True,
                 showcoastlines=True,
-                projection_type='natural earth'
-            )
+                projection_type="natural earth",
+            ),
         )
 
         # Display the choropleth map in Streamlit
         st.plotly_chart(fig)
 
-def display_vintage_country_map (db_file):
+
+def display_vintage_country_map(db_file):
 
     # Call the function to retrieve the data
     data = get_avg_vintage_rating_per_country(db_file)
@@ -324,30 +439,35 @@ def display_vintage_country_map (db_file):
         df = pd.DataFrame(data)
 
         # Create a choropleth map using Plotly Express
-        fig = px.choropleth(df, 
-                            locations='code', 
-                            color='avg_rating',
-                            color_continuous_scale="RdYlGn",
-                            hover_name="country_name",
-                            hover_data={'avg_rating': ':.2f'},
-                            projection="natural earth",
-                            labels={'avg_rating': 'Avg Rating'})
-        
-        fig.update_traces(hovertemplate='<b>%{hovertext}</b><br><br>Avg Rating: %{customdata[0]:.2f}')
+        fig = px.choropleth(
+            df,
+            locations="code",
+            color="avg_rating",
+            color_continuous_scale="RdYlGn",
+            hover_name="country_name",
+            hover_data={"avg_rating": ":.2f"},
+            projection="natural earth",
+            labels={"avg_rating": "Avg Rating"},
+        )
+
+        fig.update_traces(
+            hovertemplate="<b>%{hovertext}</b><br><br>Avg Rating: %{customdata[0]:.2f}"
+        )
 
         # Update layout settings
         fig.update_layout(
-            title_text='Country Leaderboard: Vintage Reviews',
+            title_text="Country Leaderboard: Vintage Reviews",
             geo=dict(
                 showland=True,
                 showcountries=True,
                 showcoastlines=True,
-                projection_type='natural earth'
-            )
+                projection_type="natural earth",
+            ),
         )
 
         # Display the choropleth map in Streamlit
         st.plotly_chart(fig)
+
 
 def country_pop_count():
     st.header("Vivino User Count Population Analysis")
@@ -480,24 +600,30 @@ def top_wines_grapes():
     # Display the search links as a separate list
     st.header("Search Links for the Top Five Wines")
     for i, row in group.iterrows():
-        st.markdown(f"[{row['winery']} {row['wine']}]({row['search_link']})")
+        i += 1
+        st.markdown(f"{i} - [{row['winery']} {row['wine']}]({row['search_link']})")
+
 
 def top_wines(score: float):
-    connexion = sqlite3.connect("../db/vivino.db")
+    connexion = sqlite3.connect(db_path)
     cursor = connexion.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT w.name, ROUND((w.ratings_average + v.ratings_average), 3) AS total_score
         FROM wines AS w
         JOIN vintages AS v ON w.id = v.wine_id
         JOIN wineries AS wi ON w.winery_id = wi.id
         WHERE ROUND((w.ratings_average + v.ratings_average), 3) >= ?
         ORDER BY ROUND((w.ratings_average + v.ratings_average), 3) ASC
-    """, (score,))
+    """,
+        (score,),
+    )
     result = cursor.fetchall()
     return result
 
+
 def wines_keynotes(k1, **kwargs):
-    connexion = sqlite3.connect("../db/vivino.db")
+    connexion = sqlite3.connect(db_path)
     cursor = connexion.cursor()
     # Combine k1 and additional keyword arguments
     keywords = [k1, *kwargs.values()]
@@ -527,11 +653,12 @@ def wines_keynotes(k1, **kwargs):
     # Return the result
     return result
 
+
 def keywords():
-    connexion = sqlite3.connect("../db/vivino.db")
+    connexion = sqlite3.connect(db_path)
     cursor = connexion.cursor()
-     
-    kl =[]
+
+    kl = []
     query = f"""
         select name
         from keywords
@@ -547,6 +674,7 @@ def keywords():
 
     return kl
 
+
 def semstreamlit():
     st.title("Top wines")
 
@@ -559,11 +687,11 @@ def semstreamlit():
     k4 = st.selectbox("Select a keyword for k4", [None] + keywords_list, key="k4")
     k5 = st.selectbox("Select a keyword for k5", [None] + keywords_list, key="k5")
 
-
     if st.button("Wines with the chosen keywords"):
         wines = wines_keynotes(k1=k1, k2=k2, k3=k3, k4=k4, k5=k5)
 
         st.table(wines)
+
 
 def topwines():
     st.title("Top wines")
@@ -571,9 +699,10 @@ def topwines():
     score = st.slider("Select a score", min_value=0, max_value=10)
 
     if st.button("Wines with the chosen score"):
-        wines = top_wines(score) 
+        wines = top_wines(score)
 
         st.table(wines)
+
 
 current_dir = os.path.dirname(__file__)
 previous_dir = os.path.dirname(current_dir)
@@ -581,44 +710,63 @@ db_path = os.path.join(previous_dir, "db/vivino.db")
 con = sqlite3.connect(db_path)
 cursor = con.cursor()
 
-# Provide the path to your SQLite database file
-db_file_path = "../db/vivino.db"
-
 # Create buttons in the sidebar
-st.sidebar.write('# Wiwimo Drunkrat')
+st.sidebar.write("# Wiwimo Drunkrat")
 
-st.sidebar.write('### Top Wines')
-button6 = st.sidebar.button('Per Grape Type')
-button7 = st.sidebar.button('Per Customer Rating')
-button8 = st.sidebar.button('Per Taste')
+st.sidebar.write("### Top Wines")
+button6 = st.sidebar.button("Per Grape Type")
+button7 = st.sidebar.button("Per Customer Rating")
+button8 = st.sidebar.button("Per Taste")
 
-st.sidebar.write('### Top Awards')
-button3 = st.sidebar.button('Vintages')
-button4 = st.sidebar.button('Wineries')
+st.sidebar.write("### Top Awards")
+button3 = st.sidebar.button("Vintages")
+button4 = st.sidebar.button("Wineries")
 
 st.sidebar.write("### Country Leaderboard")
 button2 = st.sidebar.button("Vintage Reviews")
 button1 = st.sidebar.button("Wine Reviews")
 
-st.sidebar.write('### Population Analysis')
-button5 = st.sidebar.button('User Population by Country')
+st.sidebar.write("### Population Analysis")
+button5 = st.sidebar.button("User Population by Country")
 
-# Display different content based on which button is clicked
+# Initialize session state
+if "last_button" not in st.session_state:
+    st.session_state["last_button"] = None
+
+# Update session state when a button is clicked
 if button1:
-    display_wine_country_map(db_file_path)
+    st.session_state["last_button"] = "button1"
 elif button2:
-    display_vintage_country_map(db_file_path)
+    st.session_state["last_button"] = "button2"
 elif button3:
-    display_top_vintages(db_file_path)
-elif button4:    
-    display_top_wineries(db_file_path)
+    st.session_state["last_button"] = "button3"
+elif button4:
+    st.session_state["last_button"] = "button4"
 elif button5:
-    country_pop_count()
+    st.session_state["last_button"] = "button5"
 elif button6:
-    top_wines_grapes()
+    st.session_state["last_button"] = "button6"
 elif button7:
-    semstreamlit()
+    st.session_state["last_button"] = "button7"
 elif button8:
+    st.session_state["last_button"] = "button8"
+
+# Display different content based on the last clicked button
+if st.session_state["last_button"] == "button1":
+    display_wine_country_map(db_path)
+elif st.session_state["last_button"] == "button2":
+    display_vintage_country_map(db_path)
+elif st.session_state["last_button"] == "button3":
+    display_top_vintages(db_path)
+elif st.session_state["last_button"] == "button4":
+    display_top_wineries(db_path)
+elif st.session_state["last_button"] == "button5":
+    country_pop_count()
+elif st.session_state["last_button"] == "button6":
+    top_wines_grapes()
+elif st.session_state["last_button"] == "button7":
+    semstreamlit()
+elif st.session_state["last_button"] == "button8":
     topwines()
 else:
-    st.write('Welcome')
+    st.write("Welcome")
