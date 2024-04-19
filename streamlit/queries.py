@@ -715,8 +715,8 @@ st.sidebar.write("# Wiwimo Drunkrat")
 
 st.sidebar.write("### Top Wines")
 button6 = st.sidebar.button("Per Grape Type")
-button7 = st.sidebar.button("Per Customer Rating")
-button8 = st.sidebar.button("Per Taste")
+button7 = st.sidebar.button("Per Taste")
+button8 = st.sidebar.button("Per Customer Rating")
 
 st.sidebar.write("### Top Awards")
 button3 = st.sidebar.button("Vintages")
