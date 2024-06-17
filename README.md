@@ -1,84 +1,31 @@
 # Wiwino Market analysis
 
 [![forthebadge made-with-python](https://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
-[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![pandas](https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
-
-
+[![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-CA4245?style=for-the-badge&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
 
 
 
 
 ## 📒 Description
 
-The company. _Wiwino_, is proudly active in the wine industry. They have been gathering data about wines from their users for years. They want to have a better understanding of the wine market by analyzing this data.
-
-This project aims to provide a tool for deriving useful insights from the gathered data.
-To view the finished project go to our website with this link [VivinoApp](https://drunken-rat.onrender.com/)
-
-## 📋 Data
-
-Wiwino data is contained in an [SQLite](https://www.sqlite.org/index.html) database. 
-
-Below is the database diagram. The `yellow keys` symbol represents `PRIMARY KEYS` while the `blue keys` symbol represents `FOREIGN KEYS`. Each column is typed. 
-
-![DB diagram](./assets/vivino_db_diagram_horizontal.png)
-
 
 ## 📦 Repo structure
 
-```
-.
-├── db/
-│ └── vivino.db
-├── analysis/
-│ ├── alice.ipynb
-│ ├── geraldine.ipynb
-│ └── sem.ipynb
-├── assets/
-│ ├── vivimo_db_diagram_horizontal.png
-│ └── presentation.pdf
-├── streamlit/
-│ └── query.py
-├── .gitignore
-├── README.md
-└── requirements.txt
-```
 
-## 🛠️ The Tool
+## 🛠️ ERD
 
-The tool created is a website using Streamlit on the front-end, with visualization using Plotly and Pandas. At the back-end are queries using SQL.
-
+![ERD](./eindwerk.pdf)
 
 ## 🎮 Usage
 
-1. **Clone the repository**: 
-
-    ```
-    git clone https://github.com/Rumineko/wiwino-drunkrat
-    ```
-
-2. **Install dependencies**: 
-
-    ```
-    pip install -r requirements.txt
-    ```
-
-3. **Run the program**: 
-
-    ```
-    cd streamlit
-    streamlit run query.py
-    ```
-## ⏱️ Timeline
-
-The development of this project took 5 days for completion.
 
 ## 📌 Personal Situation
 
-This project was completed as part of the AI Boocamp at BeCode.org by team Drunkrat. 
+This project...
 
 Connect with the team on LinkedIn:
-- [Alice Mendes](https://www.linkedin.com/in/alice-edcm/)
-- [Geraldine Nadela](https://www.linkedin.com/in/gnadela/)
-- [Sem Deleersnijder](https://www.linkedin.com/in/sem-deleersnijder-62b3bb286/)
+- [Sergey](https://github.com/Ruffneckbass)
+- [Stephen](https://github.com/stephen-lspd)
+- [Sem Deleersnijder](https://github.com/semdeleer)
+- [Zoran Van Bellegem](https://github.com/Zoranvb)
